@@ -7,6 +7,6 @@ const router = Router();
 
 const uploadController = new UploadController();
 
-router.post("/upload", validateRequest(uploadSchema), uploadController.handle);
+router.post("/upload", validateRequest(uploadSchema), (req, res) => uploadController.handle(req, res));
 
 export default router;

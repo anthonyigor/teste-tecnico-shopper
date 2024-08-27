@@ -1,5 +1,6 @@
 import express from 'express';
 import applicationRoutes from './routes';
+import { errorHandling } from './middlewares/errorHandling';
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.static('public'));
 //routes
 app.use('/', applicationRoutes);
 
+app.use(errorHandling)
 // initialize
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

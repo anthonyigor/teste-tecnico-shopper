@@ -1,4 +1,7 @@
 import { Request, Response } from "express";
+import { CustomerRepository } from "../repositories/CustomerRepository";
+import { GetCustomerService } from "../services/GetCustomerService";
+import 'express-async-errors';
 
 interface UploadRequestBody {
     image: string,
@@ -12,11 +15,20 @@ interface UploadRequest extends Request {
 }
 
 export class UploadController {
+    private getCustomerService: GetCustomerService;
+
+    constructor() {
+        const customerRepository = new CustomerRepository();
+        this.getCustomerService = new GetCustomerService(customerRepository);
+    }
 
     async handle(req: UploadRequest, res: Response) {
         const { image, customer_code, measure_datetime, measure_type } = req.body
 
-        //to implement
+        // get customer
+        const customer = await this.getCustomerService.execute(customer_code);
+        
+        res.json(customer)
     }
 
 }
