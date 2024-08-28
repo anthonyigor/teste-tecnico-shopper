@@ -1,37 +1,50 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleAIFileManager } from '@google/generative-ai/server'
 
 export class GeminiService {
     private apiKey: string;
     private genAI: GoogleGenerativeAI;
+    private fileManager: GoogleAIFileManager;
 
     constructor() {
         this.apiKey = process.env.GEMINI_API_KEY || '';
-        this.genAI = new GoogleGenerativeAI(this.apiKey);   
+        this.genAI = new GoogleGenerativeAI(this.apiKey);
+        this.fileManager = new GoogleAIFileManager(this.apiKey);
     }
 
-    async extractMeasureFromImage(imageBase64: string) {
+    async extractMeasureFromImage(fileUri: string) {
         const model = this.genAI.getGenerativeModel({
             // Choose a Gemini model.
-            model: "gemini-1.5-pro",
+            model: "gemini-1.5-flash",
           });
 
         try {
             const result = await model.generateContent([
                {
-                inlineData: {
-                    data: imageBase64,
+                fileData: {
+                    fileUri: fileUri,
                     mimeType: "image/jpeg"
                 }
                },
                {
-                text: '"Analyze this image and describe the content."'
+                text: '"If there is a meter in this image, tell me ONLY what the value of the reading is in the image"'
                }
 
             ]);
-            console.log(result.response.text()); // O resultado da análise será impresso aqui
+            console.log(result.response.text());
           } catch (error) {
             console.error("Error analyzing image:", error);
           }
+    }
+
+    async uploadImageToGoogleApiFile(filePath: string): Promise<string> {
+      const uploadResponse = await this.fileManager.uploadFile(filePath, {
+        mimeType: 'image/jpeg',
+        displayName: 'My Image'
+      })
+
+      const getResponse = await this.fileManager.getFile(uploadResponse.file.name)
+      return getResponse.uri
     }
 
 }

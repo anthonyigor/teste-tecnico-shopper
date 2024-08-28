@@ -30,6 +30,7 @@
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
     "fs": "^0.0.1-security",
+    "path": "^0.12.7",
     "yup": "^1.4.0"
   }
 }

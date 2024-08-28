@@ -6,6 +6,7 @@ import { MeasureExistsInMonthService } from "../services/MeasureExistsInMonthSer
 import { MeasureRepository } from "../repositories/MeasureRepository";
 import { GeminiService } from "../services/GeminiService";
 import { saveBase64AsFile } from "../utils/saveBase64AsFile";
+import path from "path";
 
 interface UploadRequestBody {
     image: string,
@@ -36,13 +37,18 @@ export class UploadController {
 
         // get customer
         const customer = await this.getCustomerService.execute(customer_code);
-        const isMeasureInCurrentMonth = await this.measureExistsInMonthService.execute(customer.id, measure_type, measure_datetime)
 
+        // verifica se já existe leitura naquele mês
+        const isMeasureInCurrentMonth = await this.measureExistsInMonthService.execute(customer.id, measure_type, measure_datetime)
         if (isMeasureInCurrentMonth) {
             return res.status(409).json({ "error_code": "DOUBLE_REPORT", "error_description": "Leitura do mês já realizada" });   
         }
-        saveBase64AsFile(image, './image.jpeg')
-        //  await this.geminiService.extractMeasureFromImage(image)
+        
+        const basePath = path.resolve(__dirname, '../..')
+        const filePath = path.join(basePath, './image.jpeg')
+        await saveBase64AsFile(image, filePath)
+        const fileUploadedUri = await this.geminiService.uploadImageToGoogleApiFile(filePath)
+        await this.geminiService.extractMeasureFromImage(fileUploadedUri)
 
     }
 
