@@ -7,6 +7,7 @@ import { MeasureRepository } from "../repositories/MeasureRepository";
 import { GeminiService } from "../services/GeminiService";
 import { saveBase64AsFile } from "../utils/saveBase64AsFile";
 import path from "path";
+import S3Storage from "../lib/S3Storage";
 
 interface UploadRequestBody {
     image: string,
@@ -23,6 +24,7 @@ export class UploadController {
     private getCustomerService: GetCustomerService;
     private measureExistsInMonthService: MeasureExistsInMonthService;
     private geminiService: GeminiService
+    private s3Storage: S3Storage;
 
     constructor() {
         const customerRepository = new CustomerRepository();
@@ -30,6 +32,7 @@ export class UploadController {
         const measureRepository = new MeasureRepository();
         this.measureExistsInMonthService = new MeasureExistsInMonthService(measureRepository)
         this.geminiService = new GeminiService()
+        this.s3Storage = new S3Storage();
     }
 
     async handle(req: UploadRequest, res: Response) {
@@ -45,8 +48,12 @@ export class UploadController {
         }
 
         const basePath = path.resolve(__dirname, '../../')
-        const filePath = path.join(basePath, 'tmp', 'image.jpeg')
+        const fileName = `${Date.now()}.jpeg`
+        const filePath = path.join(basePath, 'tmp', fileName)
         await saveBase64AsFile(image, filePath)
+
+        //send file to aws
+        await this.s3Storage.saveFile(fileName)
 
         const fileUploadedUri = await this.geminiService.uploadImageToGoogleApiFile(filePath)
         const measure_value = await this.geminiService.extractMeasureFromImage(fileUploadedUri)
