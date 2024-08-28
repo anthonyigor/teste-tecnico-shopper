@@ -35,7 +35,7 @@ export class UploadController {
         const isMeasureInCurrentMonth = await this.measureExistsInMonthService.execute(customer.id, measure_type, measure_datetime)
 
         if (isMeasureInCurrentMonth) {
-            return res.status(400).json({ message: "Measure already exists in this month" });
+            return res.status(409).json({ "error_code": "DOUBLE_REPORT", "error_description": "Leitura do mês já realizada" });   
         }
 
     }

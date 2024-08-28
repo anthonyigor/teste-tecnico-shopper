@@ -9,9 +9,10 @@ export const validateRequest = (schema: Yup.ObjectSchema<any>) => {
           } catch (err) {
             if (err instanceof Yup.ValidationError) {
               return res.status(400).json({
-                errors: err.inner.map(error => ({
-                  path: error.path,
-                  message: error.message,
+                error_code: "INVALID_DATA",
+                error_description: err.inner.map(error => ({
+                    path: error.path,
+                    message: error.message,
                 })),
               });
             }
