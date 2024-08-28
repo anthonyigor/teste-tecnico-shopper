@@ -52,8 +52,9 @@ export class UploadController {
         const filePath = path.join(basePath, 'tmp', fileName)
         await saveBase64AsFile(image, filePath)
 
-        //send file to aws
+        // envia arquivo para bucket aws e gera link temporario 
         await this.s3Storage.saveFile(fileName)
+        const tmpUrlImage = await this.s3Storage.generateTmpUrlFile(fileName)
 
         const fileUploadedUri = await this.geminiService.uploadImageToGoogleApiFile(filePath)
         const measure_value = await this.geminiService.extractMeasureFromImage(fileUploadedUri)

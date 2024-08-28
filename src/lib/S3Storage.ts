@@ -11,7 +11,7 @@ class S3Storage {
         })
     }
 
-    async saveFile(fileName: string) {
+    async saveFile(fileName: string): Promise<void> {
         const basePath = path.resolve(__dirname, '../..')
         const filePath = path.resolve(basePath, 'tmp', fileName)
 
@@ -26,6 +26,16 @@ class S3Storage {
             ContentType: 'image/jpeg'
         }).promise()
 
+    }
+
+    async generateTmpUrlFile(fileName: string): Promise<string> {
+        const url = await this.client.getSignedUrlPromise('getObject', {
+            Bucket: process.env.AWS_S3_BUCKET_NAME!,
+            Key: fileName,
+            Expires: 60 * 60  // expira em 1 hora
+        })
+
+        return url
     }
 
 }

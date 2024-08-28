@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from '@google/generative-ai/server'
 import { InternalError } from "../errors/InternalError";
+import { unlink } from "fs/promises";
 
 export class GeminiService {
     private apiKey: string;
@@ -45,6 +46,7 @@ export class GeminiService {
         displayName: 'My Image'
       })
 
+      await unlink(filePath)
       const getResponse = await this.fileManager.getFile(uploadResponse.file.name)
       return getResponse.uri
     }
