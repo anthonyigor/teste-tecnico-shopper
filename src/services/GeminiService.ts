@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from '@google/generative-ai/server'
+import { InternalError } from "../errors/InternalError";
 
 export class GeminiService {
     private apiKey: string;
@@ -31,9 +32,10 @@ export class GeminiService {
                }
 
             ]);
-            console.log(result.response.text());
+
+            return this.extractNumericValue(result.response.text())
           } catch (error) {
-            console.error("Error analyzing image:", error);
+            throw new InternalError(`Error analyze image: ${error}`)
           }
     }
 
@@ -46,5 +48,17 @@ export class GeminiService {
       const getResponse = await this.fileManager.getFile(uploadResponse.file.name)
       return getResponse.uri
     }
+
+    // extrair apenas valor da contagem
+    private extractNumericValue(responseText: string): string {
+      const regex = /\d+/;
+      const extractedValue = responseText.match(regex)?.[0];
+
+      if (!extractedValue) {
+          throw new InternalError("No numeric value could be extracted from the image.");
+      }
+
+      return extractedValue;
+  }
 
 }

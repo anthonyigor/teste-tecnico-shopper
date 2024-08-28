@@ -43,12 +43,14 @@ export class UploadController {
         if (isMeasureInCurrentMonth) {
             return res.status(409).json({ "error_code": "DOUBLE_REPORT", "error_description": "Leitura do mês já realizada" });   
         }
-        
-        const basePath = path.resolve(__dirname, '../..')
-        const filePath = path.join(basePath, './image.jpeg')
+
+        const basePath = path.resolve(__dirname, '../../')
+        const filePath = path.join(basePath, 'tmp', 'image.jpeg')
         await saveBase64AsFile(image, filePath)
+
         const fileUploadedUri = await this.geminiService.uploadImageToGoogleApiFile(filePath)
-        await this.geminiService.extractMeasureFromImage(fileUploadedUri)
+        const measure_value = await this.geminiService.extractMeasureFromImage(fileUploadedUri)
+        res.send(measure_value)
 
     }
 
