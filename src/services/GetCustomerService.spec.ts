@@ -41,6 +41,6 @@ describe('GetCustomerService', () => {
 
     await expect(customerService.execute('error')).rejects.toThrow(BadRequest);
     await expect(customerService.execute('error')).rejects.toThrow('Customer not found');
-    expect(mockCustomerRepository.getCustomerByUUID).toHaveBeenCalledWith('non-existent-id');
+    expect(mockCustomerRepository.getCustomerByUUID).toHaveBeenCalledWith('error');
   });
 });
