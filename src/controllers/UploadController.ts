@@ -46,20 +46,37 @@ export class UploadController {
         if (isMeasureInCurrentMonth) {
             return res.status(409).json({ "error_code": "DOUBLE_REPORT", "error_description": "Leitura do mês já realizada" });   
         }
-
-        const basePath = path.resolve(__dirname, '../../')
+        
         const fileName = `${Date.now()}.jpeg`
-        const filePath = path.join(basePath, 'tmp', fileName)
-        await saveBase64AsFile(image, filePath)
 
-        // envia arquivo para bucket aws e gera link temporario 
-        await this.s3Storage.saveFile(fileName)
-        const tmpUrlImage = await this.s3Storage.generateTmpUrlFile(fileName)
+        // Save image to a temporary file
+        const filePath = this.saveImageToFileSystem(image, fileName);
 
-        const fileUploadedUri = await this.geminiService.uploadImageToGoogleApiFile(filePath)
-        const measure_value = await this.geminiService.extractMeasureFromImage(fileUploadedUri)
-        res.send(measure_value)
+        // Upload file to AWS S3 and get temporary URL
+        const tmpUrlImage = await this.uploadFileToS3(filePath);
 
+        // Analyze the image and extract measure value using LLM
+        const measure_value = await this.extractMeasureValueFromImage(filePath);
+        
+        res.json({ measure_value })
+    }
+
+    private saveImageToFileSystem(image: string, fileName: string): string {
+        const basePath = path.resolve(__dirname, '../../');
+        const filePath = path.join(basePath, 'tmp', fileName);
+        saveBase64AsFile(image, filePath);
+        return filePath;
+    }
+
+    private async uploadFileToS3(filePath: string): Promise<string> {
+        const fileName = path.basename(filePath);
+        await this.s3Storage.saveFile(fileName);
+        return this.s3Storage.generateTmpUrlFile(fileName);
+    }
+
+    private async extractMeasureValueFromImage(filePath: string): Promise<string> {
+        const fileUploadedUri = await this.geminiService.uploadImageToGoogleApiFile(filePath);
+        return this.geminiService.extractMeasureFromImage(fileUploadedUri);
     }
 
 }
