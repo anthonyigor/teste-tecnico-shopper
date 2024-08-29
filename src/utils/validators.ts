@@ -40,9 +40,11 @@ export const confirmSchema = Yup.object().shape({
 
 export const getCustomerListSchema = Yup.object().shape({
   measure_type: Yup.string()
+  .optional()
   .test('is-valid-measure-type', 'Measure type must be either "WATER" or "GAS"', value => {
-    const normalizedValue = value?.toUpperCase();
-    return ['WATER', 'GAS'].includes(normalizedValue!);
-  })
+    if (value === undefined) return true;  // Não valida se o valor não for fornecido
+    const normalizedValue = value.toUpperCase();
+    return ['WATER', 'GAS'].includes(normalizedValue);
+  }),
 })
 
