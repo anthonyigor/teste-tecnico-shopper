@@ -1,16 +1,15 @@
 import { Request, Response } from "express";
-import { CustomerRepository } from "../repositories/CustomerRepository";
-import { GetCustomerService } from "../services/GetCustomerService";
 import 'express-async-errors';
-import { MeasureExistsInMonthService } from "../services/MeasureExistsInMonthService";
-import { MeasureRepository } from "../repositories/MeasureRepository";
-import { GeminiService } from "../services/GeminiService";
-import { saveBase64AsFile } from "../utils/saveBase64AsFile";
 import path from "path";
-import S3Storage from "../lib/S3Storage";
-import { Measure } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { CreateMeasureService } from "../services/CreateMeasureService";
+
+import { GetCustomerService } from "../services/customer/GetCustomerService";
+import { MeasureExistsInMonthService } from "../services/measure/MeasureExistsInMonthService";
+import { GeminiService } from "../services/gemini/GeminiService";
+import { CreateMeasureService } from "../services/measure/CreateMeasureService";
+
+import { saveBase64AsFile } from "../utils/saveBase64AsFile";
+import S3Storage from "../lib/S3Storage";
 
 interface UploadRequestBody {
     image: string,
