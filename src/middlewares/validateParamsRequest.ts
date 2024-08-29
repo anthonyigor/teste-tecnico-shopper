@@ -9,11 +9,8 @@ export const validateQuery = (schema: Yup.ObjectSchema<any>) => {
         } catch (err) {
             if (err instanceof Yup.ValidationError) {
                 return res.status(400).json({
-                    error_code: "INVALID_QUERY_PARAMS",
-                    error_description: err.inner.map(error => ({
-                        path: error.path,
-                        message: error.message,
-                    })),
+                    error_code: "INVALID_TYPE",
+                    error_description: "Tipo de medição não permitida"
                 });
             }
             next(err);

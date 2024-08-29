@@ -10,7 +10,9 @@ import { MeasureRepository } from "../repositories/MeasureRepository";
 
 import { UploadController } from "../controllers/UploadController";
 import { ConfirmController } from "../controllers/ConfirmController";
+import { CustomerListController } from "../controllers/CustomerListController";
 import S3Storage from "../lib/S3Storage";
+import { GetMeasuresByCustomerService } from "../services/measure/GetMeasuresByCustomerService";
 
 export class AppConfig {
     public static createUploadController(): UploadController {
@@ -47,6 +49,19 @@ export class AppConfig {
         return new ConfirmController(
             getMeasure,
             confirmMeasureValue
+        );
+    }
+
+    public static createCustomerListController(): CustomerListController {
+        // Instantiating Repositories
+        const measureRepository = new MeasureRepository();
+
+        // Instantiating Services
+        const getMeasuresByCustomerService = new GetMeasuresByCustomerService(measureRepository);
+
+        // Instantiating and returning the ConfirmController
+        return new CustomerListController(
+            getMeasuresByCustomerService
         );
     }
 }

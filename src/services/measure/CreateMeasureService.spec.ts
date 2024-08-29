@@ -23,7 +23,8 @@ describe('CreateMeasureService', () => {
             type: 'water',
             created_at: new Date(),
             isConfirmed: false,
-            customerId: 'customer-id'
+            customerId: 'customer-id',
+            image_url: 'https://example.com/image.jpg'
         };
 
         measureRepository.create.mockResolvedValue(measure);
@@ -41,7 +42,8 @@ describe('CreateMeasureService', () => {
             type: 'water',
             created_at: new Date(),
             isConfirmed: false,
-            customerId: 'customer-id'
+            customerId: 'customer-id',
+            image_url: 'https://example.com/image.jpg'
         };
 
         measureRepository.create.mockRejectedValue(new Error('Database error'));

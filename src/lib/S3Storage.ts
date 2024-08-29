@@ -32,7 +32,7 @@ class S3Storage {
         const url = await this.client.getSignedUrlPromise('getObject', {
             Bucket: process.env.AWS_S3_BUCKET_NAME!,
             Key: fileName,
-            Expires: 60 * 60  // expira em 1 hora
+            Expires: 60 * 60 * 24 * 7 // expira em 7 dias
         })
 
         return url

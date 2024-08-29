@@ -54,4 +54,25 @@ export class MeasureRepository {
         }
     }
 
+    async findMeasuresByCustomerId(id: string) {
+        const measures = await prisma.measure.findMany({
+            where: {
+                customerId: id
+            }
+        });
+
+        return measures;
+    }
+
+    async findMeasuresByCustomerAndType(id: string, measure_type: string) {
+        const measures = await prisma.measure.findMany({
+            where: {
+                customerId: id,
+                type: measure_type
+            }
+        });
+
+        return measures;
+    }
+
 }

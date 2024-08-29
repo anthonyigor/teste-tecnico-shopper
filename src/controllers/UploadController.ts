@@ -63,6 +63,7 @@ export class UploadController {
             type: type,
             value: Number(measure_value),
             isConfirmed: false,
+            image_url: tmpUrlImage,
             created_at: new Date(measure_datetime)
         });
     
