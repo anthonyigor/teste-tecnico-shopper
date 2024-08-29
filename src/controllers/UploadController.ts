@@ -24,21 +24,14 @@ interface UploadRequest extends Request {
 }
 
 export class UploadController {
-    private getCustomerService: GetCustomerService;
-    private measureExistsInMonthService: MeasureExistsInMonthService;
-    private geminiService: GeminiService
-    private s3Storage: S3Storage;
-    private createMeasureService: CreateMeasureService;
 
-    constructor() {
-        const customerRepository = new CustomerRepository();
-        this.getCustomerService = new GetCustomerService(customerRepository);
-        const measureRepository = new MeasureRepository();
-        this.measureExistsInMonthService = new MeasureExistsInMonthService(measureRepository)
-        this.geminiService = new GeminiService()
-        this.s3Storage = new S3Storage();
-        this.createMeasureService = new CreateMeasureService(measureRepository)
-    }
+    constructor(
+        private readonly getCustomerService: GetCustomerService,
+        private readonly measureExistsInMonthService: MeasureExistsInMonthService,
+        private readonly geminiService: GeminiService,
+        private readonly s3Storage: S3Storage,
+        private readonly createMeasureService: CreateMeasureService
+    ) {}
 
     async handle(req: UploadRequest, res: Response) {
         const { image, customer_code, measure_datetime, measure_type } = req.body
@@ -63,7 +56,8 @@ export class UploadController {
         // Analyze the image and extract measure value using LLM
         const measure_value = await this.extractMeasureValueFromImage(filePath);
 
-        const measure: Measure = {
+        // Create a new measure record
+        const newMeasure = await this.createMeasureService.execute({
             id: randomUUID(),
             customerId: customer.id,
             type: measure_type,
@@ -71,10 +65,8 @@ export class UploadController {
             isConfirmed: false,
             confirmed_value: null,
             created_at: new Date(measure_datetime)
-        }
-
-        const newMeasure = await this.createMeasureService.execute(measure)
-        
+        });
+    
         return res.status(200).json({ "image_url": tmpUrlImage, "measure_value": measure_value, "measure_uuid": newMeasure.id })
     }
 
