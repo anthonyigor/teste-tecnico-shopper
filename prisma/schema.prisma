@@ -25,7 +25,6 @@ model Measure {
   id              String  @id
   value           Float
   isConfirmed     Boolean
-  confirmed_value Float?
   type            String
 
   customer   Customer @relation(fields: [customerId], references: [id])

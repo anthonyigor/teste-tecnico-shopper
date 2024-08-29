@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { GetMeasure } from "../services/GetMeasure";
+import { ConfirmMeasureValue } from "../services/ConfirmMeasureValue";
 
 interface ConfirmRequestBody {
     measure_uuid: string,
@@ -11,20 +12,25 @@ interface ConfirmRequest extends Request {
 }
 
 export class ConfirmController {
-    constructor(private verifyMeasureExistsService: GetMeasure) {}
+    constructor(
+        private getMeasureService: GetMeasure,
+        private confirmMeasureValueService: ConfirmMeasureValue
+    ) {}
 
     async handle(req: ConfirmRequest, res: Response) {
         const { measure_uuid, confirm_value } = req.body;
 
-        const measure = await this.verifyMeasureExistsService.execute(measure_uuid)
+        const measure = await this.getMeasureService.execute(measure_uuid)
         if (!measure) {
             return res.status(404).json({ "error_code": "MEASURE_NOT_FOUND", "error_description": "Leitura não encontrada" });
         }
 
-        if (measure.confirmed_value) {
+        if (measure.isConfirmed) {
             return res.status(409).json({ "error_code": "CONFIRMATION_DUPLICATE", "error_description": "Leitura já confirmada" });
         }
 
+        await this.confirmMeasureValueService.execute(measure.id, confirm_value)
+        return res.status(200).json({ "success": true });
     }
 
 }

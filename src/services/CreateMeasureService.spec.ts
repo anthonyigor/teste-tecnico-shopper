@@ -22,7 +22,6 @@ describe('CreateMeasureService', () => {
             value: 123.45,
             type: 'water',
             created_at: new Date(),
-            confirmed_value: null,
             isConfirmed: false,
             customerId: 'customer-id'
         };
@@ -41,7 +40,6 @@ describe('CreateMeasureService', () => {
             value: 123.45,
             type: 'water',
             created_at: new Date(),
-            confirmed_value: null,
             isConfirmed: false,
             customerId: 'customer-id'
         };

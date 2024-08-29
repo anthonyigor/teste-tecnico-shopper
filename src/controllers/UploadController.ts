@@ -64,7 +64,6 @@ export class UploadController {
             type: type,
             value: Number(measure_value),
             isConfirmed: false,
-            confirmed_value: null,
             created_at: new Date(measure_datetime)
         });
     

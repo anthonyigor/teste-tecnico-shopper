@@ -38,4 +38,20 @@ export class MeasureRepository {
         return measure;
     }
 
+    async confirmMeasureValue(id: string, value: number) {
+        try {
+            await prisma.measure.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    value: value,
+                    isConfirmed: true
+                }
+            });
+        } catch (error) {
+            throw new Error('Erro ao confirmar leitura!')
+        }
+    }
+
 }
