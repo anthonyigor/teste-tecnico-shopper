@@ -27,7 +27,7 @@ export const uploadSchema = Yup.object().shape({
     measure_datetime: Yup.string().required('Measure datetime is required'),
     measure_type: Yup.string()
     .required('Measure type is required')
-    .test('is-valid-measure-type', 'Measure type must be either "water" or "gas"', value => {
+    .test('is-valid-measure-type', 'Measure type must be either "WATER" or "GAS"', value => {
       const normalizedValue = value.toUpperCase();
       return ['WATER', 'GAS'].includes(normalizedValue);
     })
@@ -36,5 +36,13 @@ export const uploadSchema = Yup.object().shape({
 export const confirmSchema = Yup.object().shape({
   measure_uuid: Yup.string().required('Measure uuid is required'),
   confirmed_value: Yup.number().required('Confirmed value is required')
+})
+
+export const getCustomerListSchema = Yup.object().shape({
+  measure_type: Yup.string()
+  .test('is-valid-measure-type', 'Measure type must be either "WATER" or "GAS"', value => {
+    const normalizedValue = value?.toUpperCase();
+    return ['WATER', 'GAS'].includes(normalizedValue!);
+  })
 })
 

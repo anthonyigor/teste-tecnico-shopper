@@ -1,5 +1,5 @@
-import { BadRequest } from "../errors/BadRequest";
-import { CustomerRepository } from "../repositories/CustomerRepository";
+import { BadRequest } from "../../errors/BadRequest";
+import { CustomerRepository } from "../../repositories/CustomerRepository";
 
 export class GetCustomerService {
     constructor(private customerRepository: CustomerRepository) {}

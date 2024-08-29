@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from '@google/generative-ai/server'
-import { InternalError } from "../errors/InternalError";
+import { InternalError } from "../../errors/InternalError";
 import { unlink } from "fs/promises";
 
 export class GeminiService {
