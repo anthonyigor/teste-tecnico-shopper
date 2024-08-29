@@ -28,14 +28,14 @@ export class MeasureRepository {
         return measures;
     }
 
-    async measureExists(id:string): Promise<boolean> {
+    async findMeasureById(id:string): Promise<Measure | null> {
         const measure = await prisma.measure.findUnique({
             where: {
                 id: id
             }
         });
 
-        return !!measure;
+        return measure;
     }
 
 }

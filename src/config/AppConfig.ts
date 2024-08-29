@@ -7,6 +7,7 @@ import { CustomerRepository } from "../repositories/CustomerRepository";
 import { MeasureRepository } from "../repositories/MeasureRepository";
 import { UploadController } from "../controllers/UploadController";
 import { ConfirmController } from "../controllers/ConfirmController";
+import { GetMeasure } from "../services/GetMeasure";
 
 export class AppConfig {
     public static createUploadController(): UploadController {
@@ -36,10 +37,11 @@ export class AppConfig {
         const measureRepository = new MeasureRepository();
 
         // Instantiating Services
+        const verifyMeasureExistsService = new GetMeasure(measureRepository);
 
         // Instantiating and returning the ConfirmController
         return new ConfirmController(
-            
+            verifyMeasureExistsService
         );
     }
 }
