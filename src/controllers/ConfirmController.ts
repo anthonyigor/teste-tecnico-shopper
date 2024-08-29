@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { GetMeasureService } from "../services/GetMeasureService";
-import { ConfirmMeasureValue } from "../services/ConfirmMeasureValue";
+import { GetMeasureService } from "../services/measure/GetMeasureService";
+import { ConfirmMeasureValue } from "../services/measure/ConfirmMeasureValue";
 
 interface ConfirmRequestBody {
     measure_uuid: string,

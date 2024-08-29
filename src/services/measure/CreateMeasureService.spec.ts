@@ -1,7 +1,7 @@
 import { Measure } from "@prisma/client";
 import { CreateMeasureService } from "./CreateMeasureService";
-import { MeasureRepository } from "../repositories/MeasureRepository";
-import { InternalError } from "../errors/InternalError";
+import { MeasureRepository } from "../../repositories/MeasureRepository";
+import { InternalError } from "../../errors/InternalError";
 
 describe('CreateMeasureService', () => {
     let createMeasureService: CreateMeasureService;

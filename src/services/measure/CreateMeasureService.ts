@@ -1,6 +1,6 @@
 import { Measure } from "@prisma/client";
-import { MeasureRepository } from "../repositories/MeasureRepository";
-import { InternalError } from "../errors/InternalError";
+import { MeasureRepository } from "../../repositories/MeasureRepository";
+import { InternalError } from "../../errors/InternalError";
 
 export class CreateMeasureService {
     constructor(private measureRepository: MeasureRepository) {}

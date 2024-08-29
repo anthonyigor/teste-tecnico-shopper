@@ -1,5 +1,5 @@
-import { InternalError } from "../errors/InternalError";
-import { MeasureRepository } from "../repositories/MeasureRepository";
+import { InternalError } from "../../errors/InternalError";
+import { MeasureRepository } from "../../repositories/MeasureRepository";
 
 export class ConfirmMeasureValue {
     constructor(private measureRepository: MeasureRepository) {}

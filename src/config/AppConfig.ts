@@ -7,8 +7,8 @@ import { CustomerRepository } from "../repositories/CustomerRepository";
 import { MeasureRepository } from "../repositories/MeasureRepository";
 import { UploadController } from "../controllers/UploadController";
 import { ConfirmController } from "../controllers/ConfirmController";
-import { GetMeasureService } from "../services/GetMeasureService";
-import { ConfirmMeasureValue } from "../services/ConfirmMeasureValue";
+import { GetMeasureService } from "../services/measure/GetMeasureService";
+import { ConfirmMeasureValue } from "../services/measure/ConfirmMeasureValue";
 
 export class AppConfig {
     public static createUploadController(): UploadController {
