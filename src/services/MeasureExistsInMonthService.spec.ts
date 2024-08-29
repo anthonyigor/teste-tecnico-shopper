@@ -21,7 +21,7 @@ describe('MeasureExistsInMonthService', () => {
         const measureDate = new Date(measure_datetime);
 
         measureRepository.getMeasuresByCustomerAndMonth.mockResolvedValue([
-            { id: 'measure-id', value: 123.45, created_at: measureDate, customerId: customer_uuid, type: measure_type, confirmed_value: null, isConfirmed: false },
+            { id: 'measure-id', value: 123.45, created_at: measureDate, customerId: customer_uuid, type: measure_type, isConfirmed: false },
         ]);
 
         const result = await measureExistsInMonthService.execute(customer_uuid, measure_type, measure_datetime);

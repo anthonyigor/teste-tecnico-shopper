@@ -1,6 +1,6 @@
 import { MeasureRepository } from "../repositories/MeasureRepository";
 
-export class GetMeasure {
+export class GetMeasureService {
     constructor(private measureRepository: MeasureRepository) {}
 
     execute(measure_uuid: string) {

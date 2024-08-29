@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GetMeasure } from "../services/GetMeasure";
+import { GetMeasureService } from "../services/GetMeasureService";
 import { ConfirmMeasureValue } from "../services/ConfirmMeasureValue";
 
 interface ConfirmRequestBody {
@@ -13,7 +13,7 @@ interface ConfirmRequest extends Request {
 
 export class ConfirmController {
     constructor(
-        private getMeasureService: GetMeasure,
+        private getMeasureService: GetMeasureService,
         private confirmMeasureValueService: ConfirmMeasureValue
     ) {}
 
