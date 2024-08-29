@@ -33,3 +33,8 @@ export const uploadSchema = Yup.object().shape({
     })
 })
 
+export const confirmSchema = Yup.object().shape({
+  measure_uuid: Yup.string().required('Measure uuid is required'),
+  confirmed_value: Yup.number().required('Confirmed value is required')
+})
+

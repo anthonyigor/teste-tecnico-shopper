@@ -6,6 +6,7 @@ import { CreateMeasureService } from "../services/CreateMeasureService";
 import { CustomerRepository } from "../repositories/CustomerRepository";
 import { MeasureRepository } from "../repositories/MeasureRepository";
 import { UploadController } from "../controllers/UploadController";
+import { ConfirmController } from "../controllers/ConfirmController";
 
 export class AppConfig {
     public static createUploadController(): UploadController {
@@ -27,6 +28,18 @@ export class AppConfig {
             geminiService,
             s3Storage,
             createMeasureService
+        );
+    }
+
+    public static createConfirmController(): ConfirmController {
+        // Instantiating Repositories
+        const measureRepository = new MeasureRepository();
+
+        // Instantiating Services
+
+        // Instantiating and returning the ConfirmController
+        return new ConfirmController(
+            
         );
     }
 }

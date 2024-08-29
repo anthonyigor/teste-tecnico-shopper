@@ -27,4 +27,15 @@ export class MeasureRepository {
 
         return measures;
     }
+
+    async measureExists(id:string): Promise<boolean> {
+        const measure = await prisma.measure.findUnique({
+            where: {
+                id: id
+            }
+        });
+
+        return !!measure;
+    }
+
 }
