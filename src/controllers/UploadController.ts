@@ -8,6 +8,9 @@ import { GeminiService } from "../services/GeminiService";
 import { saveBase64AsFile } from "../utils/saveBase64AsFile";
 import path from "path";
 import S3Storage from "../lib/S3Storage";
+import { Measure } from "@prisma/client";
+import { randomUUID } from "crypto";
+import { CreateMeasureService } from "../services/CreateMeasureService";
 
 interface UploadRequestBody {
     image: string,
@@ -25,6 +28,7 @@ export class UploadController {
     private measureExistsInMonthService: MeasureExistsInMonthService;
     private geminiService: GeminiService
     private s3Storage: S3Storage;
+    private createMeasureService: CreateMeasureService;
 
     constructor() {
         const customerRepository = new CustomerRepository();
@@ -33,6 +37,7 @@ export class UploadController {
         this.measureExistsInMonthService = new MeasureExistsInMonthService(measureRepository)
         this.geminiService = new GeminiService()
         this.s3Storage = new S3Storage();
+        this.createMeasureService = new CreateMeasureService(measureRepository)
     }
 
     async handle(req: UploadRequest, res: Response) {
@@ -57,8 +62,20 @@ export class UploadController {
 
         // Analyze the image and extract measure value using LLM
         const measure_value = await this.extractMeasureValueFromImage(filePath);
+
+        const measure: Measure = {
+            id: randomUUID(),
+            customerId: customer.id,
+            type: measure_type,
+            value: Number(measure_value),
+            isConfirmed: false,
+            confirmed_value: null,
+            created_at: new Date(measure_datetime)
+        }
+
+        const newMeasure = await this.createMeasureService.execute(measure)
         
-        res.json({ measure_value })
+        return res.status(200).json({ "image_url": tmpUrlImage, "measure_value": measure_value, "measure_uuid": newMeasure.id })
     }
 
     private saveImageToFileSystem(image: string, fileName: string): string {
