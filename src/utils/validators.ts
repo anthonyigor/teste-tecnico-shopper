@@ -25,6 +25,11 @@ export const uploadSchema = Yup.object().shape({
     image: Yup.string().required('Image is required').test('is-base64-image', 'Invalid base64 image', isBase64Image),
     customer_code: Yup.string(),
     measure_datetime: Yup.string().required('Measure datetime is required'),
-    measure_type: Yup.string().lowercase().required('Measure type is required')
+    measure_type: Yup.string()
+    .required('Measure type is required')
+    .test('is-valid-measure-type', 'Measure type must be either "water" or "gas"', value => {
+      const normalizedValue = value.toUpperCase();
+      return ['WATER', 'GAS'].includes(normalizedValue);
+    })
 })
 
