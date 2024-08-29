@@ -13,7 +13,7 @@ class S3Storage {
 
     async saveFile(fileName: string): Promise<void> {
         const basePath = path.resolve(__dirname, '../..')
-        const filePath = path.resolve(basePath, 'tmp', fileName)
+        const filePath = path.resolve(basePath, 'temp', fileName)
 
 
         const fileContent = await readFile(filePath)

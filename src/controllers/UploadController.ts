@@ -10,6 +10,7 @@ import { CreateMeasureService } from "../services/measure/CreateMeasureService";
 
 import { saveBase64AsFile } from "../utils/saveBase64AsFile";
 import S3Storage from "../lib/S3Storage";
+import { existsSync, mkdirSync } from "fs";
 
 interface UploadRequestBody {
     image: string,
@@ -48,7 +49,7 @@ export class UploadController {
         const fileName = `${Date.now()}.jpeg`
 
         // Save image to a temporary file
-        const filePath = this.saveImageToFileSystem(image, fileName);
+        const filePath = await this.saveImageToFileSystem(image, fileName);
 
         // Upload file to AWS S3 and get temporary URL
         const tmpUrlImage = await this.uploadFileToS3(filePath);
@@ -70,10 +71,19 @@ export class UploadController {
         return res.status(200).json({ "image_url": tmpUrlImage, "measure_value": measure_value, "measure_uuid": newMeasure.id })
     }
 
-    private saveImageToFileSystem(image: string, fileName: string): string {
-        const basePath = path.resolve(__dirname, '../../');
-        const filePath = path.join(basePath, 'tmp', fileName);
-        saveBase64AsFile(image, filePath);
+    private async saveImageToFileSystem(image: string, fileName: string): Promise<string> {
+        const basePath = path.resolve(__dirname, '../../temp');
+
+        // Verifica se o diretório existe
+        if (!existsSync(basePath)) {
+        mkdirSync(basePath, { recursive: true });
+            console.log('Diretório criado com sucesso!');
+        } else {
+            console.log('Diretório já existe.');
+        }
+
+        const filePath = path.join(basePath, fileName);
+        await saveBase64AsFile(image, filePath);
         return filePath;
     }
 
