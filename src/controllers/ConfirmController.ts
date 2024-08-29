@@ -4,7 +4,7 @@ import { ConfirmMeasureValue } from "../services/ConfirmMeasureValue";
 
 interface ConfirmRequestBody {
     measure_uuid: string,
-    confirm_value: number
+    confirmed_value: number
 }
 
 interface ConfirmRequest extends Request {
@@ -18,7 +18,7 @@ export class ConfirmController {
     ) {}
 
     async handle(req: ConfirmRequest, res: Response) {
-        const { measure_uuid, confirm_value } = req.body;
+        const { measure_uuid, confirmed_value } = req.body;
 
         const measure = await this.getMeasureService.execute(measure_uuid)
         if (!measure) {
@@ -29,7 +29,7 @@ export class ConfirmController {
             return res.status(409).json({ "error_code": "CONFIRMATION_DUPLICATE", "error_description": "Leitura já confirmada" });
         }
 
-        await this.confirmMeasureValueService.execute(measure.id, confirm_value)
+        await this.confirmMeasureValueService.execute(measure.id, confirmed_value)
         return res.status(200).json({ "success": true });
     }
 
