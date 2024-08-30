@@ -1,7 +1,7 @@
 // __tests__/customerService.test.ts
 import { GetCustomerService } from './GetCustomerService';
-import { CustomerRepository } from '../repositories/CustomerRepository';
-import { BadRequest } from '../errors/BadRequest';
+import { CustomerRepository } from '../../repositories/CustomerRepository';
+import { BadRequest } from '../../errors/BadRequest';
 import { Customer } from '@prisma/client';
 
 jest.mock('../repositories/CustomerRepository');

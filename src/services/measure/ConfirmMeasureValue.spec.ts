@@ -1,6 +1,6 @@
 import { ConfirmMeasureValue } from './ConfirmMeasureValue';
-import { MeasureRepository } from '../repositories/MeasureRepository';
-import { InternalError } from '../errors/InternalError';
+import { MeasureRepository } from '../../repositories/MeasureRepository';
+import { InternalError } from '../../errors/InternalError';
 
 describe('ConfirmMeasureValue', () => {
     let confirmMeasureValue: ConfirmMeasureValue;

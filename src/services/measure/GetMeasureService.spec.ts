@@ -16,7 +16,7 @@ describe('GetMeasureService', () => {
 
     it('deve chamar findMeasureById com o parâmetro correto', async () => {
         const measure_uuid = 'uuid';
-        const mockMeasure = { id: measure_uuid, value: 100, isConfirmed: true, type: "WATER", customerId: 'aaaaaaaaa', created_at: new Date() };
+        const mockMeasure = { id: measure_uuid, value: 100, isConfirmed: true, type: "WATER", customerId: 'aaaaaaaaa', created_at: new Date(), image_url: 'https://example.com/image.jpg' };
 
         measureRepository.findMeasureById.mockResolvedValue(mockMeasure);
 
