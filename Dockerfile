@@ -11,7 +11,6 @@ COPY package*.json ./
 RUN npm install --production=false
 
 COPY prisma ./prisma
-COPY .env ./.env
 
 # Copiar o restante do código da aplicação
 COPY . .
