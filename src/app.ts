@@ -15,12 +15,17 @@ app.use(express.static('public'));
 app.use('/', applicationRoutes);
 
 // cria customers para testes das rotas
-// const createCustomersTest = async () => {
-//     const customerRepository = new CustomerRepository();
-//     await customerRepository.createCustomer('9ff6186a-9ba3-42a4-a2a5-3a668dfe6b72', 'Jonh Doe');
-//     await customerRepository.createCustomer('d3b981bd-ab76-40b6-be4a-cf8a6e195808', 'Maria D');
-// }
-// createCustomersTest();
+const createCustomersTest = async () => {
+    const customerRepository = new CustomerRepository();
+    const customerA = await customerRepository.getCustomerByUUID('9ff6186a-9ba3-42a4-a2a5-3a668dfe6b72')
+    const customerB = await customerRepository.getCustomerByUUID('d3b981bd-ab76-40b6-be4a-cf8a6e195808')
+
+    if (!customerA && !customerB) {
+        await customerRepository.createCustomer('9ff6186a-9ba3-42a4-a2a5-3a668dfe6b72', 'Jonh Doe');
+        await customerRepository.createCustomer('d3b981bd-ab76-40b6-be4a-cf8a6e195808', 'Maria D');
+    }
+}
+createCustomersTest();
 
 app.use(errorHandling)
 // initialize

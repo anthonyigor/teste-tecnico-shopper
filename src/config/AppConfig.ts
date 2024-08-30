@@ -11,7 +11,6 @@ import { MeasureRepository } from "../repositories/MeasureRepository";
 import { UploadController } from "../controllers/UploadController";
 import { ConfirmController } from "../controllers/ConfirmController";
 import { CustomerListController } from "../controllers/CustomerListController";
-import S3Storage from "../lib/S3Storage";
 import { GetMeasuresByCustomerService } from "../services/measure/GetMeasuresByCustomerService";
 
 export class AppConfig {
@@ -24,7 +23,6 @@ export class AppConfig {
         const getCustomerService = new GetCustomerService(customerRepository);
         const measureExistsInMonthService = new MeasureExistsInMonthService(measureRepository);
         const geminiService = new GeminiService();
-        const s3Storage = new S3Storage();
         const createMeasureService = new CreateMeasureService(measureRepository);
 
         // Instantiating and returning the UploadController
@@ -32,7 +30,6 @@ export class AppConfig {
             getCustomerService,
             measureExistsInMonthService,
             geminiService,
-            s3Storage,
             createMeasureService
         );
     }
