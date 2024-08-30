@@ -1,5 +1,5 @@
 # Usar uma imagem base do Node.js
-FROM node:latest
+FROM node:20.13.1
 
 # Definir o diretório de trabalho dentro do contêiner
 WORKDIR /usr/src/app
@@ -8,19 +8,21 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Instalar as dependências
-RUN npm install --production
+RUN npm install --production=false
+
+COPY prisma ./prisma
+COPY .env ./.env
 
 # Copiar o restante do código da aplicação
 COPY . .
 
+RUN npx prisma generate
+
 # Buildar a aplicação (se necessário, ex: com TypeScript ou Webpack)
 RUN npm run build
-
-# Definir a variável de ambiente NODE_ENV como production
-ENV NODE_ENV=production
 
 # Expor a porta em que a aplicação estará rodando
 EXPOSE 3000
 
 # Executar npx prisma db push antes de iniciar a aplicação
-CMD ["sh", "-c", "npx prisma db push && npm start"]
+CMD ["sh", "-c", "npx prisma db push && npm run dev"]
