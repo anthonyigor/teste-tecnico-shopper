@@ -11,9 +11,6 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL="postgresql://postgres:postgres@db:5432/shopper?schema=backend"
-      - AWS_S3_BUCKET_NAME='teste-tecnico-shopper'
-      - AWS_ACCESS_KEY_ID='AKIAYS2NQ5DZHMIKOQPV'
-      - AWS_SECRET_ACCESS_KEY='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'
     volumes:
       - ./:/usr/src/app
     depends_on:

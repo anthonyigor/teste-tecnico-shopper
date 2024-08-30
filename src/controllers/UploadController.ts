@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import 'express-async-errors';
 import path from "path";
 import { randomUUID } from "crypto";
+import url from 'url';
 
 import { GetCustomerService } from "../services/customer/GetCustomerService";
 import { MeasureExistsInMonthService } from "../services/measure/MeasureExistsInMonthService";
@@ -9,8 +10,6 @@ import { GeminiService } from "../services/gemini/GeminiService";
 import { CreateMeasureService } from "../services/measure/CreateMeasureService";
 
 import { saveBase64AsFile } from "../utils/saveBase64AsFile";
-import S3Storage from "../lib/S3Storage";
-import { existsSync, mkdirSync } from "fs";
 
 interface UploadRequestBody {
     image: string,
@@ -29,7 +28,6 @@ export class UploadController {
         private readonly getCustomerService: GetCustomerService,
         private readonly measureExistsInMonthService: MeasureExistsInMonthService,
         private readonly geminiService: GeminiService,
-        private readonly s3Storage: S3Storage,
         private readonly createMeasureService: CreateMeasureService
     ) {}
 
@@ -50,9 +48,7 @@ export class UploadController {
 
         // Save image to a temporary file
         const filePath = await this.saveImageToFileSystem(image, fileName);
-
-        // Upload file to AWS S3 and get temporary URL
-        const tmpUrlImage = await this.uploadFileToS3(filePath);
+        const tempUrl = url.resolve(req.protocol + '://' + req.get('host'), `/images/${fileName}`);
 
         // Analyze the image and extract measure value using LLM
         const measure_value = await this.extractMeasureValueFromImage(filePath);
@@ -64,33 +60,18 @@ export class UploadController {
             type: type,
             value: Number(measure_value),
             isConfirmed: false,
-            image_url: tmpUrlImage,
+            image_url: tempUrl,
             created_at: new Date(measure_datetime)
         });
     
-        return res.status(200).json({ "image_url": tmpUrlImage, "measure_value": measure_value, "measure_uuid": newMeasure.id })
+        return res.status(200).json({ "image_url": tempUrl, "measure_value": measure_value, "measure_uuid": newMeasure.id })
     }
 
     private async saveImageToFileSystem(image: string, fileName: string): Promise<string> {
-        const basePath = path.resolve(__dirname, '../../temp');
-
-        // Verifica se o diretório existe
-        if (!existsSync(basePath)) {
-        mkdirSync(basePath, { recursive: true });
-            console.log('Diretório criado com sucesso!');
-        } else {
-            console.log('Diretório já existe.');
-        }
-
+        const basePath = path.resolve(__dirname, '../../public/images');
         const filePath = path.join(basePath, fileName);
         await saveBase64AsFile(image, filePath);
         return filePath;
-    }
-
-    private async uploadFileToS3(filePath: string): Promise<string> {
-        const fileName = path.basename(filePath);
-        await this.s3Storage.saveFile(fileName);
-        return this.s3Storage.generateTmpUrlFile(fileName);
     }
 
     private async extractMeasureValueFromImage(filePath: string): Promise<string> {

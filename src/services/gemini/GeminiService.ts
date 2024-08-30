@@ -45,8 +45,7 @@ export class GeminiService {
         mimeType: 'image/jpeg',
         displayName: 'My Image'
       })
-
-      await unlink(filePath)
+      
       const getResponse = await this.fileManager.getFile(uploadResponse.file.name)
       return getResponse.uri
     }
